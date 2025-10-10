@@ -1,0 +1,52 @@
+👩‍🏫 Người 1: Phần mở đầu & các mẫu cơ bản
+
+Từ: 6.1 → 6.3
+Gồm:
+ • 6.1 – Introduction to Patterns:
+Giới thiệu design pattern là gì, cấu trúc mô tả (context, problem, forces, solution…).
+ • 6.2 – Abstraction–Occurrence Pattern:
+Quản lý nhóm đối tượng có chung thông tin nhưng khác chi tiết.
+ • 6.3 – General Hierarchy Pattern:
+Biểu diễn hệ thống phân cấp (superior / subordinate).
+
+📌 Gợi ý thời lượng: ~4 phút
+
+⸻
+
+👨‍💻 Người 2: Các mẫu về vai trò và đối tượng duy nhất
+
+Từ: 6.4 → 6.5
+Gồm:
+ • 6.4 – Player–Role Pattern:
+Một đối tượng có thể có nhiều vai trò trong các ngữ cảnh khác nhau.
+ • 6.5 – Singleton Pattern:
+Đảm bảo chỉ có một đối tượng duy nhất của lớp trong toàn hệ thống.
+
+📌 Gợi ý thời lượng: ~3–4 phút
+
+⸻
+
+👩‍💻 Người 3: Các mẫu về tương tác giữa các lớp
+
+Từ: 6.6 → 6.9
+Gồm:
+ • 6.6 – Observer Pattern
+ • 6.7 – Delegation Pattern
+ • 6.8 – Adapter Pattern
+ • 6.9 – Façade Pattern
+👉 Các mẫu này đều liên quan đến giao tiếp và kết nối giữa các lớp.
+
+📌 Gợi ý thời lượng: ~4–5 phút
+
+⸻
+
+👨‍🏫 Người 4: Các mẫu nâng cao & kết luận
+
+Từ: 6.10 → 6.15
+Gồm:
+ • 6.10 – Immutable Pattern
+ • 6.11 – Read-only Interface Pattern
+ • 6.12 – Proxy Pattern
+ • 6.13 – Factory Pattern
+ • 6.14 – Example (OCSF framework)
+ • 6.15 – Difficulties and Risks
