@@ -18,7 +18,7 @@ public class ApiGatewayApplication {
 
 	// [COMMAND]: Tạo Bean WebClient.Builder có khả năng Load Balancing
 	@Bean
-	@LoadBalanced // Tự động sử dụng Eureka để phân giải tên service (AUTH-SERVICE)
+	@LoadBalanced // Tự động sử dụng Eureka để phân giải tên service (auth-service)
 	public WebClient.Builder loadBalancedWebClientBuilder() {
 		return WebClient.builder();
 	}

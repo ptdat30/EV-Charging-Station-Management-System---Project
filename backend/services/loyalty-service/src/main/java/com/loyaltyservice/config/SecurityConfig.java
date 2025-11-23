@@ -16,6 +16,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Cho phép truy cập actuator endpoints
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().permitAll()  // Allow all requests (Gateway already handles auth)
             );
         

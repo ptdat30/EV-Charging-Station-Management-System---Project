@@ -9,9 +9,13 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     fetch-registry: true
     register-with-eureka: true
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    hostname: api-gateway
 
 spring:
   # Codec configuration for large file uploads (Gateway uses reactive, not servlet)
@@ -34,7 +38,7 @@ spring:
       routes:
         # --- Route cho Auth Service (KHÔNG cần filter) ---
         - id: auth-service-route
-          uri: lb://AUTH-SERVICE
+          uri: lb://auth-service
           predicates:
             - Path=/api/auth/** # Cho phép login, validate
 
@@ -134,10 +138,12 @@ spring:
       #         - OPTIONS
       #       allowedHeaders: "*"
 
-      # Load Balancer (Giữ nguyên)
+      # Load Balancer - Disable cache temporarily to avoid stale entries
       loadbalancer:
         cache:
-          enabled: false
+          enabled: false  # Disable cache to ensure fresh service resolution
+        # Use Eureka for service discovery
+        use-404: false
 
 # Logging (Giữ nguyên)
 logging:

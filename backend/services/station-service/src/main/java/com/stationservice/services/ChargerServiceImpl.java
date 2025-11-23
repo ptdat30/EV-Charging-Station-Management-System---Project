@@ -6,7 +6,7 @@ import com.stationservice.dtos.CreateChargerRequestDto;
 import com.stationservice.dtos.UpdateChargerRequestDto;
 import com.stationservice.entities.Charger;
 import com.stationservice.entities.Station;
-import com.paymentservice.exceptions.ResourceNotFoundException;
+import com.stationservice.exceptions.ResourceNotFoundException;
 import com.stationservice.repositories.ChargerRepository;
 import com.stationservice.repositories.StationRepository;
 import lombok.RequiredArgsConstructor;

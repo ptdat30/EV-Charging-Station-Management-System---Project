@@ -12,6 +12,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -80,9 +81,25 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             log.debug("Validating token for path: {}", requestPath);
 
             // Gọi auth-service để xác thực token và lấy thông tin user
-            return webClientBuilder.build()
+            // Sử dụng load balancer để resolve service name từ Eureka
+            // Format: http://service-name/path - LoadBalanced WebClient sẽ tự động resolve
+            // Build URI properly để tránh encoding issues
+            // IMPORTANT: Use lowercase service name to match Eureka registration
+            String validateUrl = UriComponentsBuilder
+                    .fromUriString("http://auth-service/api/auth/validate")
+                    .queryParam("token", token)
+                    .build()
+                    .toUriString();
+            log.debug("Calling auth service at: {} for path: {}", validateUrl, requestPath);
+            
+            // Build WebClient with explicit load balancer configuration
+            WebClient webClient = webClientBuilder
+                    .baseUrl("http://auth-service")  // Set base URL with service name
+                    .build();
+            
+            return webClient
                     .get()
-                    .uri("http://AUTH-SERVICE/api/auth/validate?token=" + token) // Gọi qua Eureka
+                    .uri("/api/auth/validate?token={token}", token) // Use path variable for proper encoding
                     .retrieve() // Bắt đầu lấy response
                     // Xử lý lỗi 4xx từ auth-service (ví dụ: token không hợp lệ)
                     .onStatus(status -> status.is4xxClientError(), clientResponse -> {
@@ -126,7 +143,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                         if (error instanceof InvalidTokenException) {
                             return onError(exchange, error.getMessage(), HttpStatus.UNAUTHORIZED);
                         }
-                        log.error("Error calling auth service for token validation: {}", error.getMessage());
+                        log.error("Error calling auth service for token validation: {} - URL: {} - Error type: {}", 
+                                error.getMessage(), validateUrl, error.getClass().getName(), error);
                         return onError(exchange, "Authentication Service Error", HttpStatus.INTERNAL_SERVER_ERROR);
                     });
         };

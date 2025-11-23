@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // API công khai
                         .requestMatchers("/api/users/register", "/api/users/by-email").permitAll()
+                        // Cho phép truy cập actuator endpoints
+                        .requestMatchers("/actuator/**").permitAll()
                         // Tạm thời cho phép GET (sẽ dùng @PreAuthorize để kiểm soát)
                         // .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                         // Mọi request khác cần được xác thực (ít nhất là có token hợp lệ)

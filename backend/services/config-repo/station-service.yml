@@ -5,7 +5,7 @@ spring:
   application:
     name: STATION-SERVICE  # Phải khớp với tên trong API Gateway route
   datasource:
-    url: jdbc:mysql://localhost:3306/station_service_db?useSSL=false
+    url: jdbc:mysql://localhost:3306/station_service_db?useSSL=false&characterEncoding=utf8&useUnicode=true&serverTimezone=UTC
     username: root # Thay bằng username của bạn
     password: huynhdat123@ # Thay bằng mật khẩu của bạn
   jpa:
@@ -16,9 +16,9 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
   instance:
-    prefer-ip-address: true
-    ip-address: 127.0.0.1
+    prefer-ip-address: false
+    hostname: station-service
     non-secure-port: 8081
     instance-id: ${spring.application.name}:${server.port}

@@ -1,49 +1,55 @@
 # ===============================================================
-# FILE: application.yml (in notification-service/src/main/resources)
-# PURPOSE: Connect to Config Server AND provide early mail config
+# FILE: application.yml (auth-service)
 # ===============================================================
+
+server:
+  port: 8086
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
     name: auth-service
   cloud:
     config:
-      uri: http://localhost:8888
-      fail-fast: true
+      uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
+      fail-fast: ${SPRING_CLOUD_CONFIG_FAILFAST:false}
   config:
-    import: "optional:configserver:http://localhost:8888"
-
-  # --- Local Mail Configuration ---
-  # Properties needed early for JavaMailSender bean creation
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: huynhphongdat2005@gmail.com # Your email
-    password: dapp xywu xmag ahdh # Your App Password
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8888}
 
   # --- Database Configuration ---
   datasource:
-    url: jdbc:mysql://localhost:3306/notification_service_db?allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: huynhdat123@
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/auth_service_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:huynhdat123@}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
-  # --- RabbitMQ Configuration ---
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 5s
+# --- JWT Configuration (fallback if config server unavailable) ---
+jwt:
+  secret: ${JWT_SECRET:f4f54e19a4e3b5e1b2e6a3d7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7}
+  expirationMs: ${JWT_EXPIRATION_MS:86400000}
 
-# --- Application-specific RabbitMQ Configuration ---
-app:
-  rabbitmq:
-    exchange: notification-exchange
-    queue: notification-queue
-    routing-key: notification-routing-key
+# --- Eureka Configuration ---
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: false
+    hostname: ${HOSTNAME:auth-service}
 
-server:
-  port: 8085
+# --- Actuator Configuration ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized

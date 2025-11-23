@@ -37,6 +37,8 @@ public class SecurityConfig {
                         // Cho phép login và validate công khai
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/validate").permitAll()
+                        // Cho phép truy cập actuator endpoints
+                        .requestMatchers("/actuator/**").permitAll()
 
                         .anyRequest().permitAll()
                 )
