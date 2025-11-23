@@ -4,6 +4,11 @@
 
 server:
   port: 9000
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
@@ -16,7 +21,7 @@ spring:
       fail-fast: false
 
   datasource:
-    url: jdbc:mysql://localhost:3306/user_service_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/user_service_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true
     username: root
     password: huynhdat123@
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -49,12 +54,13 @@ cloudinary:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
     registry-fetch-interval-seconds: 5  # Tăng tần suất fetch
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
+    hostname: ${HOSTNAME:user-service}
     instance-id: ${spring.application.name}:${server.port}
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30
@@ -64,3 +70,13 @@ logging:
   level:
     com.netflix.discovery: DEBUG
     org.springframework.cloud: DEBUG
+
+# --- Actuator Configuration ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized

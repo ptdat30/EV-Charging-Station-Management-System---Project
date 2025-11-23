@@ -19,6 +19,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Cho phép truy cập actuator endpoints
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().permitAll() // Tạm thời cho phép tất cả request
                 );
         return http.build();

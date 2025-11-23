@@ -4,6 +4,11 @@
 
 server:
   port: 8088
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
@@ -11,11 +16,13 @@ spring:
   cloud:
     config:
       enabled: true
-      uri: http://localhost:8888
-      fail-fast: false
+      uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
+      fail-fast: ${SPRING_CLOUD_CONFIG_FAILFAST:false}
+  config:
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8888}
 
   datasource:
-    url: jdbc:mysql://localhost:3306/loyalty_service_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/loyalty_service_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true
     username: root
     password: huynhdat123@
 
@@ -33,16 +40,17 @@ spring:
     username: guest
     password: guest
 
-# ===== QUAN TR?NG: Eureka Client Configuration =====
+# ===== QUAN TRỌNG: Eureka Client Configuration =====
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
-    registry-fetch-interval-seconds: 5  # T?ng t?n su?t fetch
+    registry-fetch-interval-seconds: 5  # Tăng tần suất fetch
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
+    hostname: ${HOSTNAME:loyalty-service}
     instance-id: ${spring.application.name}:${server.port}
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30
@@ -57,3 +65,13 @@ logging:
 app:
   rabbitmq:
     queue: payment.success
+
+# --- Actuator Configuration ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
